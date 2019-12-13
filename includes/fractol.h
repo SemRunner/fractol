@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fractol.h                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: odrinkwa <odrinkwa@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/12/13 19:42:55 by odrinkwa          #+#    #+#             */
+/*   Updated: 2019/12/13 19:49:25 by odrinkwa         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef FRACTOL_H
 # define FRACTOL_H
 
@@ -61,15 +73,27 @@ void			fractol_reset(t_fractol *f);
 */
 
 void			draw_fractol(t_fractol *f);
+void			put_fractol_legend(t_fractol *f);
+
+int				cycle_mandel(t_fractol *f, t_complex z);
+int				cycle_julia(t_fractol *f, t_complex z);
+int				cycle_brn_sp(t_fractol *f, t_complex z);
+int				cycle_cel_man(t_fractol *f, t_complex z);
+int				cycle_test1(t_fractol *f, t_complex z);
+int				cycle_cel_per(t_fractol *f, t_complex z);
+
 void			mandelbrot(t_mlx *m, t_complex max, t_complex min,
 							int max_iter);
 void			julia(t_mlx *m, t_complex max, t_complex min,
 							int max_iter, t_complex k);
+
+int				in_frontiers(int x, int y, t_fractol *f);
 
 int				fract_keyhook(int keycode, void *fr);
 int				mouse_move(int x, int y, t_fractol *f);
 int				mouse_press(int key, int x, int y, t_fractol *f);
 int				mouse_release(int key, int x, int y, t_fractol *f);
 void			zoom_fractol(t_fractol *f, int keycode);
+void			move_fractol(int x, int y, t_fractol *f);
 
 #endif

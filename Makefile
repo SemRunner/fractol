@@ -6,7 +6,7 @@
 #    By: odrinkwa <odrinkwa@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/17 12:13:46 by odrinkwa          #+#    #+#              #
-#    Updated: 2019/11/30 17:52:35 by odrinkwa         ###   ########.fr        #
+#    Updated: 2019/12/13 19:57:20 by odrinkwa         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,11 +20,13 @@ INCLIBFT_DIR := ./libft/includes
 OBJ_DIR := ./objects
 LIB_DIR := ./libft
 
-SRC_COMMON := complex.c draw_fractal.c keyhooks_fractol.c fractol_init.c
+SRC_COMMON := complex.c draw_fractal.c keyhooks_fractol.c fractol_init.c \
+		put_legend_fractol.c cycle_fractol1.c cycle_fractol2.c \
+		zoom_move_fractol.c init_cl.c
 
 SRC  := main.c $(SRC_COMMON)
 
-HDRS := includes/fractol.h
+HDRS := includes/fractol.h includes/fractol_opcl.h
 OBJ  := $(addprefix $(OBJ_DIR)/,$(SRC:.c=.o))
 OBJECTS = $(SOURCES:.c=.o)
 
@@ -47,7 +49,7 @@ FDF_OBJ_WITH_PATH := $(addprefix $(FDF_OBJ_DIR)/, $(FDF_OBJ))
 
 CC := gcc
 CFLAGS := -O3 -g3 -Wall -Wextra # -Werror
-MLXPARAMS := -L ./fdf_lib/mlx -lmlx -framework OpenGL -framework AppKit
+MLXPARAMS := -L ./fdf_lib/mlx -lmlx -framework OpenGL -framework AppKit -framework OpenCL
 LIBFT_NODEBUG :=
 
 L_FT := libft

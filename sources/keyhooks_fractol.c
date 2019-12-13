@@ -1,10 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   keyhooks_fractol.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: odrinkwa <odrinkwa@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/12/13 19:31:49 by odrinkwa          #+#    #+#             */
+/*   Updated: 2019/12/13 19:41:06 by odrinkwa         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fractol.h"
 
-int		mouse_move(int x, int y, t_fractol *f)
+int			mouse_move(int x, int y, t_fractol *f)
 {
-	if (x < 0 || x >= WIDTH)
-		return (1);
-	if (y < 0 || y >= HEIGHT)
+	if (!in_frontiers(x, y, f))
 		return (1);
 	f->mouse_x = x;
 	f->mouse_y = y;
@@ -19,21 +29,15 @@ int		mouse_move(int x, int y, t_fractol *f)
 	}
 	if (f->in_move)
 	{
-		f->factor.re -= (x - f->m_xx) / f->zoom;
-		f->factor.im += (f->m_yy - y) / f->zoom;
-		f->m_xx = x;
-		f->m_yy = y;
+		move_fractol(x, y, f);
 		draw_fractol(f);
 	}
-
-	return (1); 
+	return (1);
 }
 
 int			mouse_press(int key, int x, int y, t_fractol *f)
 {
-	if (x < 0 || x >= WIDTH)
-		return (1);
-	if (y < 0 || y >= HEIGHT)
+	if (!in_frontiers(x, y, f))
 		return (1);
 	f->mouse_x = x;
 	f->mouse_y = y;
@@ -59,7 +63,6 @@ int			mouse_release(int key, int x, int y, t_fractol *f)
 	return (1);
 }
 
-
 int			fract_keyhook1(int keycode, t_fractol *f)
 {
 	if (keycode == FDF_KEY_1)
@@ -76,7 +79,7 @@ int			fract_keyhook1(int keycode, t_fractol *f)
 		f->type_fractol = 5;
 	else if (keycode == FDF_Z)
 		fractol_reset(f);
-
+	else
 		return (0);
 	return (1);
 }
@@ -90,11 +93,11 @@ int			fract_keyhook(int keycode, void *fr)
 	if (keycode == FDF_KEY_Q || keycode == FDF_KEY_ESC)
 		tmlx_destroy(f->m, 0);
 	else if (keycode == FDF_KEY_PLUS)
-		f->max_iter +=
-			(int)((double)(f->max_iter) * 0.2) > 0 ? (int)((double)(f->max_iter)) * 0.2 : 1;
+		f->max_iter += (int)((double)(f->max_iter) * 0.2) > 0 ?
+						(int)((double)(f->max_iter)) * 0.2 : 1;
 	else if (keycode == FDF_KEY_MINUS && f->max_iter > 2)
-		f->max_iter -= 
-			(int)((double)(f->max_iter) * 0.2) > 0 ? (int)((double)(f->max_iter)) * 0.2 : 1;
+		f->max_iter -= (int)((double)(f->max_iter) * 0.2) > 0 ?
+						(int)((double)(f->max_iter)) * 0.2 : 1;
 	else if (keycode == FDF_KEY_X)
 		f->type_fractol = (f->type_fractol + 1) % COUNT_FRACTOLS;
 	else if (keycode == FDF_KEY_C)

@@ -1,0 +1,7 @@
+{
+	"C_Cpp.dimInactiveRegions": false,
+	"files.associations": {
+		"fractol.h": "c",
+		"fractol_opcl.h": "c"
+	}
+}
