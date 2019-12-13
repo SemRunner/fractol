@@ -23,6 +23,22 @@
 # define FDF_KEY_ESC 53
 # define FDF_KEY_PLUS 24
 # define FDF_KEY_MINUS 27
+# define FDF_KEY_X 7
+# define FDF_KEY_C 8
+# define FDF_SCROLL_U 4
+# define FDF_SCROLL_D 5
+# define FDF_KEY_1 18
+# define FDF_KEY_2 19
+# define FDF_KEY_3 20
+# define FDF_KEY_4 21
+# define FDF_KEY_5 23
+# define FDF_KEY_6 22
+# define FDF_MOUSE_LEFT 1
+# define FDF_Z 6
+
+# define FDF_WHITE 0xFFFFFF
+# define FDF_LGREEN 0x5F9E90
+# define FDF_GRAY 0x9f9e90
 
 typedef struct		s_point
 {

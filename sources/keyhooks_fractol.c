@@ -1,5 +1,86 @@
 #include "fractol.h"
 
+int		mouse_move(int x, int y, t_fractol *f)
+{
+	if (x < 0 || x >= WIDTH)
+		return (1);
+	if (y < 0 || y >= HEIGHT)
+		return (1);
+	f->mouse_x = x;
+	f->mouse_y = y;
+	if (f->type_fractol == FR_JULIA)
+	{
+		f->k = init_complex(
+			4 * ((double)x / (double)WIDTH - 0.5),
+			4 * ((double)(HEIGHT - y) / (double)HEIGHT - 0.5));
+		ft_printf("%Lf, %Lf\n", f->k.re, f->k.im);
+		ft_printf("%d %d\n", x, y);
+		draw_fractol(f);
+	}
+	if (f->in_move)
+	{
+		f->factor.re -= (x - f->m_xx) / f->zoom;
+		f->factor.im += (f->m_yy - y) / f->zoom;
+		f->m_xx = x;
+		f->m_yy = y;
+		draw_fractol(f);
+	}
+
+	return (1); 
+}
+
+int			mouse_press(int key, int x, int y, t_fractol *f)
+{
+	if (x < 0 || x >= WIDTH)
+		return (1);
+	if (y < 0 || y >= HEIGHT)
+		return (1);
+	f->mouse_x = x;
+	f->mouse_y = y;
+	if (key == FDF_SCROLL_D || key == FDF_SCROLL_U)
+		zoom_fractol(f, key);
+	else if (key == FDF_MOUSE_LEFT)
+	{
+		f->in_move = 1;
+		f->m_xx = x;
+		f->m_yy = y;
+	}
+	draw_fractol(f);
+	return (1);
+}
+
+int			mouse_release(int key, int x, int y, t_fractol *f)
+{
+	if (x && y)
+		;
+	if (key == FDF_MOUSE_LEFT)
+		f->in_move = 0;
+	draw_fractol(f);
+	return (1);
+}
+
+
+int			fract_keyhook1(int keycode, t_fractol *f)
+{
+	if (keycode == FDF_KEY_1)
+		f->type_fractol = 0;
+	else if (keycode == FDF_KEY_2)
+		f->type_fractol = 1;
+	else if (keycode == FDF_KEY_3)
+		f->type_fractol = 2;
+	else if (keycode == FDF_KEY_4)
+		f->type_fractol = 3;
+	else if (keycode == FDF_KEY_5)
+		f->type_fractol = 4;
+	else if (keycode == FDF_KEY_6)
+		f->type_fractol = 5;
+	else if (keycode == FDF_Z)
+		fractol_reset(f);
+
+		return (0);
+	return (1);
+}
+
 int			fract_keyhook(int keycode, void *fr)
 {
 	t_fractol *f;
@@ -14,32 +95,14 @@ int			fract_keyhook(int keycode, void *fr)
 	else if (keycode == FDF_KEY_MINUS && f->max_iter > 2)
 		f->max_iter -= 
 			(int)((double)(f->max_iter) * 0.2) > 0 ? (int)((double)(f->max_iter)) * 0.2 : 1;
-	else if (keycode == 7)
-		f->type_fractol = (f->type_fractol + 1) % 2;
-	else if (keycode == FDF_KEY_UP)
-	{
-		f->coef_zoom *= 1.2;
-		double	coef_x = (double)f->mouse_x / (double)WIDTH;		//coef_x = 0..1
-		double	coef_y = (double)f->mouse_y / (double)HEIGHT;
-		f->centre.re += (coef_x - 0.5) * 4.0 / f->coef_zoom;
-		f->centre.im += (coef_y - 0.5) * 4.0 / f->coef_zoom;
-		f->max.re = (f->max.re - f->centre.re) / f->coef_zoom;
-		f->max.im = (f->max.im - f->centre.im) / f->coef_zoom;
-		f->min.re = (f->min.re - f->centre.re) / f->coef_zoom;
-		f->min.im = (f->min.im - f->centre.im) / f->coef_zoom;
-	}
-	else if (keycode == FDF_KEY_DOWN)
-	{
-		f->coef_zoom *= 0.8;
-		double	coef_x = (double)f->mouse_x / (double)WIDTH;		//coef_x = 0..1
-		double	coef_y = (double)f->mouse_y / (double)HEIGHT;
-		f->centre.re += (coef_x - 0.5) * 4.0 / f->coef_zoom;
-		f->centre.im += (coef_y - 0.5) * 4.0 / f->coef_zoom;
-		f->max.re = (f->max.re - f->centre.re) / f->coef_zoom;
-		f->max.im = (f->max.im - f->centre.im) / f->coef_zoom;
-		f->min.re = (f->min.re - f->centre.re) / f->coef_zoom;
-		f->min.im = (f->min.im - f->centre.im) / f->coef_zoom;
-	}
+	else if (keycode == FDF_KEY_X)
+		f->type_fractol = (f->type_fractol + 1) % COUNT_FRACTOLS;
+	else if (keycode == FDF_KEY_C)
+		f->type_color = (f->type_color + 1) % 4;
+	else if (keycode == FDF_KEY_UP || keycode == FDF_KEY_DOWN)
+		zoom_fractol(f, keycode);
+	else
+		fract_keyhook1(keycode, f);
 	draw_fractol(f);
 	ft_printf("max_iter = %d\n", f->max_iter);
 	return (0);
