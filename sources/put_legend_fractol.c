@@ -25,7 +25,8 @@ void		put_fractol_keybindings(t_fractol *f)
 					"numbers, X: change type fractal");
 	mlx_string_put(f->m->ptr, f->m->win, 10, 180, FDF_GRAY, "C: change color");
 	mlx_string_put(f->m->ptr, f->m->win, 10, 200, FDF_GRAY, "Z: reset fractal");
-	mlx_string_put(f->m->ptr, f->m->win, 10, 220, FDF_GRAY, "ESC, Q: exit");
+	mlx_string_put(f->m->ptr, f->m->win, 10, 220, FDF_GRAY, "A: change device");
+	mlx_string_put(f->m->ptr, f->m->win, 10, 240, FDF_GRAY, "ESC, Q: exit");
 }
 
 void		put_fractol_legend(t_fractol *f)
@@ -36,21 +37,30 @@ void		put_fractol_legend(t_fractol *f)
 	mlx_string_put(f->m->ptr, f->m->win, 10, 10, FDF_WHITE,
 					"FRACT'OL CURRENT CONDITIONS:");
 	ft_printf("%yTYPE OF FRACTOL: ", str);
-	if (f->type_fractol == 0)
+	if (f->type_fractol == FR_MANDEL)
 		ft_printf("%yMANDEL", str);
-	else if (f->type_fractol == 1)
+	else if (f->type_fractol == FR_JULIA)
 		ft_printf("%yJULIA", str);
-	else if (f->type_fractol == 2)
+	else if (f->type_fractol == FR_BRN_SP)
 		ft_printf("%yBURNING SHIP", str);
-	else if (f->type_fractol == 3)
+	else if (f->type_fractol == FR_CEL_MAN)
 		ft_printf("%yCEL_MAN", str);
-	else if (f->type_fractol == 4)
+	else if (f->type_fractol == FR_TEST1)
 		ft_printf("%yTEST", str);
-	else if (f->type_fractol == 5)
+	else if (f->type_fractol == FR_CEL_PER)
 		ft_printf("%yCEL_PER", str);
+	else if (f->type_fractol == FR_SPIDER)
+		ft_printf("%yCEL_SPIDER", str);		
 	mlx_string_put(f->m->ptr, f->m->win, 10, 30, FDF_LGREEN, str);
 	str[0] = '\0';
-	ft_printf("%yITERATIONS: %d", str, f->max_iter);
+	ft_printf("%yDEVICE: ", str);
+	if (f->type_device == 0)
+		ft_printf("%yDEVICE: CPU", str);
+	else if (f->type_device == 1)
+		ft_printf("%yDEVICE: GPU", str);
+	ft_printf("%y, ITERATIONS: %d", str, f->max_iter);
 	mlx_string_put(f->m->ptr, f->m->win, 10, 50, FDF_LGREEN, str);
+
+
 	put_fractol_keybindings(f);
 }

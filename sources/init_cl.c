@@ -67,7 +67,7 @@ void	get_kernel(t_opcl *opcl)
 	int		ret;
 	char	buf[100000];
 
-	ret = clBuildProgram(opcl->program, 1, &opcl->dev, 0, 0, 0);
+	ret = clBuildProgram(opcl->program, 1, &opcl->dev, "-I includes", 0, 0);
 	if (CL_SUCCESS != ret)
 	{
 		clGetProgramBuildInfo(opcl->program, opcl->dev,
@@ -75,7 +75,7 @@ void	get_kernel(t_opcl *opcl)
 		ft_printf("%s", buf);
 		terminate(opcl, CL_ERROR);
 	}
-	if (!(opcl->kernel = clCreateKernel(opcl->program, "draw", &ret)))
+	if (!(opcl->kernel = clCreateKernel(opcl->program, "draw_fractol_cl", &ret)))
 		terminate(opcl, CL_ERROR);
 }
 
@@ -118,7 +118,7 @@ int			init_cl(t_opcl *opcl)
 	if (!(opcl->program = clCreateProgramWithSource(opcl->context,
 		1, (const char**)&src, NULL, &ret)))
 		terminate(opcl, CL_ERROR);
-	ft_memdel((void**)src);
+	ft_memdel((void**)&src);
 	get_kernel(opcl);
 	return (1);
 }

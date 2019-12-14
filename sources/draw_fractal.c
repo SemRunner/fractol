@@ -52,6 +52,8 @@ int			iterate_fractol_point(t_fractol *f)
 		iter = cycle_test1(f, z);
 	else if (f->type_fractol == FR_CEL_PER)
 		iter = cycle_cel_per(f, z);
+	else if (f->type_fractol == FR_SPIDER)
+		iter = cycle_spider(f, z);
 	return (iter);
 }
 

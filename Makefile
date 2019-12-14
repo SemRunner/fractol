@@ -22,7 +22,7 @@ LIB_DIR := ./libft
 
 SRC_COMMON := complex.c draw_fractal.c keyhooks_fractol.c fractol_init.c \
 		put_legend_fractol.c cycle_fractol1.c cycle_fractol2.c \
-		zoom_move_fractol.c init_cl.c
+		zoom_move_fractol.c init_cl.c draw_cl.c
 
 SRC  := main.c $(SRC_COMMON)
 

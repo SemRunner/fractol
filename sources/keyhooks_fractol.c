@@ -25,12 +25,18 @@ int			mouse_move(int x, int y, t_fractol *f)
 			4 * ((double)(HEIGHT - y) / (double)HEIGHT - 0.5));
 		ft_printf("%Lf, %Lf\n", f->k.re, f->k.im);
 		ft_printf("%d %d\n", x, y);
-		draw_fractol(f);
+		if (f->type_device == 0)
+			draw_fractol(f);
+		else
+			draw_cl(f->opcl, f);
 	}
 	if (f->in_move)
 	{
 		move_fractol(x, y, f);
-		draw_fractol(f);
+		if (f->type_device == 0)
+			draw_fractol(f);
+		else
+			draw_cl(f->opcl, f);
 	}
 	return (1);
 }
@@ -49,7 +55,10 @@ int			mouse_press(int key, int x, int y, t_fractol *f)
 		f->m_xx = x;
 		f->m_yy = y;
 	}
-	draw_fractol(f);
+	if (f->type_device == 0)
+		draw_fractol(f);
+	else
+		draw_cl(f->opcl, f);
 	return (1);
 }
 
@@ -59,7 +68,10 @@ int			mouse_release(int key, int x, int y, t_fractol *f)
 		;
 	if (key == FDF_MOUSE_LEFT)
 		f->in_move = 0;
-	draw_fractol(f);
+	if (f->type_device == 0)
+		draw_fractol(f);
+	else
+		draw_cl(f->opcl, f);
 	return (1);
 }
 
@@ -77,6 +89,8 @@ int			fract_keyhook1(int keycode, t_fractol *f)
 		f->type_fractol = 4;
 	else if (keycode == FDF_KEY_6)
 		f->type_fractol = 5;
+	else if (keycode == FDF_KEY_7)
+		f->type_fractol = 6;
 	else if (keycode == FDF_Z)
 		fractol_reset(f);
 	else
@@ -92,10 +106,11 @@ int			fract_keyhook(int keycode, void *fr)
 	ft_printf("%d\n", keycode);
 	if (keycode == FDF_KEY_Q || keycode == FDF_KEY_ESC)
 		tmlx_destroy(f->m, 0);
-	else if (keycode == FDF_KEY_PLUS)
+	else if (keycode == FDF_KEY_PLUS || keycode == FDF_KEY_NP_PLUS)
 		f->max_iter += (int)((double)(f->max_iter) * 0.2) > 0 ?
 						(int)((double)(f->max_iter)) * 0.2 : 1;
-	else if (keycode == FDF_KEY_MINUS && f->max_iter > 2)
+	else if ((keycode == FDF_KEY_MINUS || keycode == FDF_KEY_NP_MINUS)
+				&& f->max_iter > 2)
 		f->max_iter -= (int)((double)(f->max_iter) * 0.2) > 0 ?
 						(int)((double)(f->max_iter)) * 0.2 : 1;
 	else if (keycode == FDF_KEY_X)
@@ -104,9 +119,14 @@ int			fract_keyhook(int keycode, void *fr)
 		f->type_color = (f->type_color + 1) % 4;
 	else if (keycode == FDF_KEY_UP || keycode == FDF_KEY_DOWN)
 		zoom_fractol(f, keycode);
+	else if (keycode == FDF_KEY_A)
+		f->type_device = (f->type_device + 1) % 2;
 	else
 		fract_keyhook1(keycode, f);
-	draw_fractol(f);
+	if (f->type_device == 0)
+		draw_fractol(f);
+	else
+		draw_cl(f->opcl, f);
 	ft_printf("max_iter = %d\n", f->max_iter);
 	return (0);
 }

@@ -1,0 +1,43 @@
+# define FR_MANDEL 0
+# define FR_JULIA 1
+# define FR_BRN_SP 2
+# define FR_CEL_MAN 3
+# define FR_TEST1 4
+# define FR_CEL_PER 5
+# define FR_SPIDER 6
+
+typedef struct	s_complex_cl
+{
+	float		re;
+	float		im;
+}				t_complex_cl;
+
+typedef struct			s_fractol_cl
+{
+	int			type_fractol;
+	int			type_color;
+
+	float		zoom;
+	float		m_x;
+	float		m_y;
+	int			max_iter;
+	t_complex_cl	k;
+	t_complex_cl	factor;
+
+	int			height;
+	int			width;
+}						t_fractol_cl;
+
+t_complex_cl	init_complex(float re, float im);
+int				set_fractol_color(int iter, int max_iter, int type_color);
+
+int				cycle_mandel(t_fractol_cl f, t_complex_cl z, t_complex_cl c);
+int				cycle_julia(t_fractol_cl f, t_complex_cl z, t_complex_cl c);
+int				cycle_brn_sp(t_fractol_cl f, t_complex_cl z, t_complex_cl c);
+int				cycle_cel_man(t_fractol_cl f, t_complex_cl z, t_complex_cl c);
+int				cycle_test1(t_fractol_cl f, t_complex_cl z, t_complex_cl c);
+int				cycle_cel_per(t_fractol_cl f, t_complex_cl z, t_complex_cl c);
+int				cycle_spider(t_fractol_cl f, t_complex_cl z, t_complex_cl c);
+
+float			pow1(float t, int i);
+float			fabs1(float t);

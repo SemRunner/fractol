@@ -21,6 +21,12 @@
 # define CL_ERROR 0
 # define STD_ERROR 1
 
+typedef struct	s_complex_cl
+{
+	float		re;
+	float		im;
+}				t_complex_cl;
+
 typedef struct 			s_opcl
 {
 	cl_device_id		dev;
@@ -38,12 +44,18 @@ typedef struct			s_fractol_cl
 	int			type_fractol;
 	int			type_color;
 
-	double		zoom;
-	double		m_x;
-	double		m_y;
+	float		zoom;
+	float		m_x;
+	float		m_y;
 	int			max_iter;
-	t_complex	k;
-	t_complex	factor;
+	t_complex_cl	k;
+	t_complex_cl	factor;
+
+	int			height;
+	int			width;
 }						t_fractol_cl;
+
+int						init_cl(t_opcl *opcl);
+void					terminate(t_opcl *opcl, int flag);
 
 #endif

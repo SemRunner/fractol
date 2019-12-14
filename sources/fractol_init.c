@@ -32,6 +32,7 @@ void	fractol_init(t_fractol *f)
 	f->m_y = HEIGHT / 2;
 	f->factor = init_complex((f->max.re - f->min.re) / (WIDTH - 1),
 								(f->max.im - f->min.im) / (HEIGHT - 1));
+	f->type_device = 1;
 }
 
 void	fractol_reset(t_fractol *f)

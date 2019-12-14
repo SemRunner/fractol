@@ -17,12 +17,16 @@ void		set_fractol_cl(t_fractol *f, t_fractol_cl *f_cl)
 {
 	f_cl->type_fractol = f->type_fractol;
 	f_cl->type_color = f->type_color;
-	f_cl->zoom = f->zoom;
-	f_cl->m_x = f->m_x;
-	f_cl->m_y = f->m_y;
+	f_cl->zoom = (float)f->zoom;
+	f_cl->m_x = (float)f->m_x;
+	f_cl->m_y = (float)f->m_y;
 	f_cl->max_iter = f->max_iter;
-	f_cl->factor = f->factor;
-	f_cl->k = f->k;
+	f_cl->factor.re = (float)f->factor.re;
+	f_cl->factor.im = (float)f->factor.im;
+	f_cl->k.re = (float)f->k.re;
+	f_cl->k.im = (float)f->k.im;
+	f_cl->height = f->m->height;
+	f_cl->width = f->m->width;
 }
 
 void		set_args(t_opcl *opcl, t_fractol_cl *f_cl)
@@ -38,9 +42,24 @@ void		set_args(t_opcl *opcl, t_fractol_cl *f_cl)
 void		execute_kernel(t_opcl *opcl, t_fractol *f)
 {
 	t_fractol_cl	f_cl;
+	int				ret;
 
 	opcl->total_s = WIDTH * HEIGHT;
 	opcl->local_s = 250;
 	set_fractol_cl(f, &f_cl);
 	set_args(opcl, &f_cl);
+	ret = clEnqueueNDRangeKernel(opcl->queue, opcl->kernel, 1,
+			NULL, &opcl->total_s, &opcl->local_s, 0, NULL, NULL);
+	if (ret != CL_SUCCESS)
+		terminate(opcl, CL_ERROR);
+}
+
+void		draw_cl(t_opcl *opcl, t_fractol *f)
+{
+	execute_kernel(opcl, f);
+	clEnqueueReadBuffer(opcl->queue, opcl->buf, CL_TRUE, 0,
+		WIDTH * HEIGHT * 4, f->m->data_mainim, 0, NULL, NULL);
+	mlx_clear_window(f->m->ptr, f->m->win);
+	draw_main_image(f->m);
+	put_fractol_legend(f);
 }

@@ -26,10 +26,15 @@ int		main(int argc, char **argv)
 
 	fractol_init(&f);
 	init_cl(&opcl);
-	tmlx_initialize(&m, HEIGHT, WIDTH);
+	tmlx_initialize(&m, WIDTH, HEIGHT);
 	tmlx_create_mlx(&m, "fractol");
 	f.m = &m;
-	draw_fractol(&f);
+	f.opcl = &opcl;
+	if (f.type_device == 0)
+		draw_fractol(&f);
+	else
+		draw_cl(f.opcl, &f);
+	ft_printf("draw_cl finished\n");
 	if (argc > 3)
 		ft_printf("%s\n", argv[1]);
 	ft_printf("test\n");

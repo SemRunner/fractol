@@ -17,11 +17,12 @@
 # include "mlx.h"
 # include "math.h"
 # include "libft.h"
+# include "fractol_opcl.h"
 
 # define HEIGHT 1000
 # define WIDTH 1000
 
-# define COUNT_FRACTOLS 6
+# define COUNT_FRACTOLS 7
 
 # define FR_MANDEL 0
 # define FR_JULIA 1
@@ -29,11 +30,12 @@
 # define FR_CEL_MAN 3
 # define FR_TEST1 4
 # define FR_CEL_PER 5
+# define FR_SPIDER 6
 
 typedef struct	s_complex
 {
-	long double	re;
-	long double	im;
+	long double		re;
+	long double		im;
 }				t_complex;
 
 typedef struct	s_fractol
@@ -47,11 +49,11 @@ typedef struct	s_fractol
 	int			mouse_y;
 	int			in_move;
 
-	double		zoom;
-	double		m_x;
-	double		m_y;
-	double		m_xx;
-	double		m_yy;
+	long double		zoom;
+	long double		m_x;
+	long double		m_y;
+	long double		m_xx;
+	long double		m_yy;
 
 	int			max_iter;
 
@@ -61,9 +63,15 @@ typedef struct	s_fractol
 	t_complex	c;
 	t_complex	k;
 	t_complex	factor;
+
+	t_opcl		*opcl;
+	int			type_device;
+
 }				t_fractol;
 
-t_complex		init_complex(double re, double im);
+
+
+t_complex		init_complex(long double re, long double im);
 
 void			fractol_init(t_fractol *f);
 void			fractol_reset(t_fractol *f);
@@ -81,6 +89,7 @@ int				cycle_brn_sp(t_fractol *f, t_complex z);
 int				cycle_cel_man(t_fractol *f, t_complex z);
 int				cycle_test1(t_fractol *f, t_complex z);
 int				cycle_cel_per(t_fractol *f, t_complex z);
+int				cycle_spider(t_fractol *f, t_complex z);
 
 void			mandelbrot(t_mlx *m, t_complex max, t_complex min,
 							int max_iter);
@@ -95,5 +104,11 @@ int				mouse_press(int key, int x, int y, t_fractol *f);
 int				mouse_release(int key, int x, int y, t_fractol *f);
 void			zoom_fractol(t_fractol *f, int keycode);
 void			move_fractol(int x, int y, t_fractol *f);
+
+/*
+** openCL
+*/
+
+void			draw_cl(t_opcl *opcl, t_fractol *f);
 
 #endif
