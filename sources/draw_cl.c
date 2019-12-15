@@ -6,7 +6,7 @@
 /*   By: odrinkwa <odrinkwa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/13 22:24:23 by odrinkwa          #+#    #+#             */
-/*   Updated: 2019/12/13 23:17:41 by odrinkwa         ###   ########.fr       */
+/*   Updated: 2019/12/15 13:14:17 by odrinkwa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void		execute_kernel(t_opcl *opcl, t_fractol *f)
 	set_fractol_cl(f, &f_cl);
 	set_args(opcl, &f_cl);
 	ret = clEnqueueNDRangeKernel(opcl->queue, opcl->kernel, 1,
-			NULL, &opcl->total_s, &opcl->local_s, 0, NULL, NULL);
+			NULL, &opcl->total_s, NULL, 0, NULL, NULL);
 	if (ret != CL_SUCCESS)
 		terminate(opcl, CL_ERROR);
 }
@@ -60,6 +60,7 @@ void		draw_cl(t_opcl *opcl, t_fractol *f)
 	clEnqueueReadBuffer(opcl->queue, opcl->buf, CL_TRUE, 0,
 		WIDTH * HEIGHT * 4, f->m->data_mainim, 0, NULL, NULL);
 	mlx_clear_window(f->m->ptr, f->m->win);
+	draw_background_legend(f);
 	draw_main_image(f->m);
 	put_fractol_legend(f);
 }

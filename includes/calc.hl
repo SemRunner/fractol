@@ -6,7 +6,7 @@
 # define FR_CEL_PER 5
 # define FR_SPIDER 6
 
-#define FR_FLOAT float
+#define FR_FLOAT double
 
 typedef struct	s_complex_cl
 {

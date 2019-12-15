@@ -6,63 +6,43 @@
 /*   By: odrinkwa <odrinkwa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/13 19:55:09 by odrinkwa          #+#    #+#             */
-/*   Updated: 2019/12/13 22:08:51 by odrinkwa         ###   ########.fr       */
+/*   Updated: 2019/12/15 13:31:20 by odrinkwa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 #include "fractol_opcl.h"
 
-char		*load_src(char *path)
+static void	free_cl(t_opcl *opcl)
 {
-	int		fd;
-	char	buf[100];
-	int		res;
-	char	*tmp;
-	char	*src;
-
-	src = NULL;
-	if ((fd = open(path, O_RDONLY)) < 0)
-		return (0);
-	errno = 0;
-	while ((res = read(fd, buf, 99)) > 0)
-	{
-		buf[res] = '\0';
-		if (!src)
-			src = ft_strdup(buf);
-		else
-		{
-			tmp = src;
-			src = ft_strjoin(tmp, buf);
-			ft_memdel((void**)&tmp);
-		}
-		buf[0] = '\0';
-	}
-	if (errno == ENOMEM)
-		ft_memdel((void**)&src);
-	return (src);
+	if (opcl->context)
+		clReleaseContext(opcl->context);
+	if (opcl->queue)
+		clReleaseCommandQueue(opcl->queue);
+	if (opcl->program)
+		clReleaseProgram(opcl->program);
+	if (opcl->kernel)
+		clReleaseKernel(opcl->kernel);
+	if (opcl->buf)
+		clReleaseMemObject(opcl->buf);
 }
 
-void		free_cl(t_opcl *opcl)
-{
-	clReleaseContext(opcl->context);
-	clReleaseCommandQueue(opcl->queue);
-	clReleaseProgram(opcl->program);
-	clReleaseKernel(opcl->kernel);
-	clReleaseMemObject(opcl->buf);
-}
-
-void	terminate(t_opcl *opcl, int flag)
+void		terminate(t_opcl *opcl, int flag)
 {
 	if (flag == CL_ERROR)
 		ft_printf("%wOpenCL Error\n", 2);
 	else if (flag == STD_ERROR)
 		ft_printf("%wFile read error\n", 2);
+	else if (flag == 2)
+		ft_printf("%wError\n", 2);
 	free_cl(opcl);
-	exit(-1);
+	if (flag == CL_ERROR || flag == STD_ERROR || flag == 2)
+		exit(-1);
+	else
+		exit(0);
 }
 
-void	get_kernel(t_opcl *opcl)
+static void	get_kernel(t_opcl *opcl)
 {
 	int		ret;
 	char	buf[100000];
@@ -75,11 +55,12 @@ void	get_kernel(t_opcl *opcl)
 		ft_printf("%s", buf);
 		terminate(opcl, CL_ERROR);
 	}
-	if (!(opcl->kernel = clCreateKernel(opcl->program, "draw_fractol_cl", &ret)))
+	if (!(opcl->kernel = clCreateKernel(opcl->program,
+										"draw_fractol_cl", &ret)))
 		terminate(opcl, CL_ERROR);
 }
 
-int			get_device(t_opcl *opcl)
+static int	get_device(t_opcl *opcl)
 {
 	int				ret;
 	cl_platform_id	platformid;
@@ -108,9 +89,11 @@ int			init_cl(t_opcl *opcl)
 		return (0);
 	if (!(opcl->context = clCreateContext(0, 1, &opcl->dev, 0, 0, &ret)))
 		terminate(opcl, CL_ERROR);
-	if (!(opcl->queue = clCreateCommandQueue(opcl->context, opcl->dev, 0, &ret)))
+	if (!(opcl->queue = clCreateCommandQueue(opcl->context,
+											opcl->dev, 0, &ret)))
 		terminate(opcl, CL_ERROR);
-	opcl->buf = clCreateBuffer(opcl->context, CL_MEM_WRITE_ONLY, WIDTH * HEIGHT * 4, 0, &ret);
+	opcl->buf = clCreateBuffer(opcl->context, CL_MEM_WRITE_ONLY,
+								WIDTH * HEIGHT * 4, 0, &ret);
 	if (ret != CL_SUCCESS)
 		terminate(opcl, CL_ERROR);
 	if (!(src = load_src("sources/calc.cl")))

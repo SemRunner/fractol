@@ -6,7 +6,7 @@
 /*   By: odrinkwa <odrinkwa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/13 19:02:57 by odrinkwa          #+#    #+#             */
-/*   Updated: 2019/12/13 19:41:29 by odrinkwa         ###   ########.fr       */
+/*   Updated: 2019/12/15 12:33:14 by odrinkwa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ void		draw_fractol(t_fractol *f)
 				set_fractol_color(iter, f->max_iter, f->type_color));
 		}
 	}
+	draw_background_legend(f);
 	mlx_clear_window(f->m->ptr, f->m->win);
 	draw_main_image(f->m);
 	put_fractol_legend(f);

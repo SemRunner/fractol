@@ -6,7 +6,7 @@
 /*   By: odrinkwa <odrinkwa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/13 19:41:40 by odrinkwa          #+#    #+#             */
-/*   Updated: 2019/12/13 19:41:41 by odrinkwa         ###   ########.fr       */
+/*   Updated: 2019/12/15 14:43:34 by odrinkwa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	fractol_init(t_fractol *f)
 	f->k = init_complex(0.0, 0.0);
 	f->type_fractol = FR_MANDEL;
 	f->type_color = 0;
+	f->show_legend = 0;
 	f->centre = init_complex(0.0, 0.0);
 	f->zoom = 150.0;
 	f->in_move = 0;
@@ -33,6 +34,9 @@ void	fractol_init(t_fractol *f)
 	f->factor = init_complex((f->max.re - f->min.re) / (WIDTH - 1),
 								(f->max.im - f->min.im) / (HEIGHT - 1));
 	f->type_device = 1;
+	f->imlegend = NULL;
+	f->data_imlegend = NULL;
+	f->bits_pixel = 32;
 }
 
 void	fractol_reset(t_fractol *f)
@@ -50,4 +54,5 @@ void	fractol_reset(t_fractol *f)
 	f->m_yy = 0;
 	f->factor = init_complex((f->max.re - f->min.re) / (WIDTH - 1),
 								(f->max.im - f->min.im) / (HEIGHT - 1));
+	f->show_legend = 0;
 }

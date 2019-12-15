@@ -6,7 +6,7 @@
 /*   By: odrinkwa <odrinkwa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/14 13:19:24 by odrinkwa          #+#    #+#             */
-/*   Updated: 2019/11/30 22:14:45 by odrinkwa         ###   ########.fr       */
+/*   Updated: 2019/12/15 15:09:28 by odrinkwa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@
 # define FDF_KEY_A 0
 # define FDF_KEY_C 8
 # define FDF_KEY_Q 12
+# define FDF_KEY_W 13
 # define FDF_KEY_X 7
 # define FDF_Z 6
 
@@ -168,7 +169,6 @@ void				rotate_points(t_mlx *m);
 ** file draw.c draw_point.c get_proj_point.c iso_transform.c
 **      fdf_draw_figures.c
 */
-
 
 void				draw_main_image(t_mlx *m);
 void				clear_image(t_mlx *m);

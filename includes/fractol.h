@@ -6,7 +6,7 @@
 /*   By: odrinkwa <odrinkwa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/13 19:42:55 by odrinkwa          #+#    #+#             */
-/*   Updated: 2019/12/13 19:49:25 by odrinkwa         ###   ########.fr       */
+/*   Updated: 2019/12/15 15:07:53 by odrinkwa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,14 +40,19 @@ typedef struct	s_complex
 
 typedef struct	s_fractol
 {
-	t_mlx		*m;
+	t_mlx			*m;
+	void			*imlegend;
+	int				*data_imlegend;
+	int				bits_pixel;
+	int				size_line;
 
-	int			type_fractol;
-	int			type_color;
+	int				type_fractol;
+	int				type_color;
+	int				show_legend;
 
-	int			mouse_x;
-	int			mouse_y;
-	int			in_move;
+	int				mouse_x;
+	int				mouse_y;
+	int				in_move;
 
 	long double		zoom;
 	long double		m_x;
@@ -55,21 +60,19 @@ typedef struct	s_fractol
 	long double		m_xx;
 	long double		m_yy;
 
-	int			max_iter;
+	int				max_iter;
 
-	t_complex	centre;
-	t_complex	max;
-	t_complex	min;
-	t_complex	c;
-	t_complex	k;
-	t_complex	factor;
+	t_complex		centre;
+	t_complex		max;
+	t_complex		min;
+	t_complex		c;
+	t_complex		k;
+	t_complex		factor;
 
-	t_opcl		*opcl;
-	int			type_device;
+	t_opcl			*opcl;
+	int				type_device;
 
 }				t_fractol;
-
-
 
 t_complex		init_complex(long double re, long double im);
 
@@ -82,6 +85,7 @@ void			fractol_reset(t_fractol *f);
 
 void			draw_fractol(t_fractol *f);
 void			put_fractol_legend(t_fractol *f);
+void			draw_background_legend(t_fractol *f);
 
 int				cycle_mandel(t_fractol *f, t_complex z);
 int				cycle_julia(t_fractol *f, t_complex z);

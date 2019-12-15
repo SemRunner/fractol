@@ -6,7 +6,7 @@
 /*   By: odrinkwa <odrinkwa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/13 19:27:02 by odrinkwa          #+#    #+#             */
-/*   Updated: 2019/12/13 19:28:53 by odrinkwa         ###   ########.fr       */
+/*   Updated: 2019/12/15 13:14:05 by odrinkwa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int				cycle_cel_per(t_fractol *f, t_complex z)
 
 int				cycle_spider(t_fractol *f, t_complex z)
 {
-	int		iter;
+	int			iter;
 	t_complex	c_tmp;
 
 	iter = 0;
@@ -36,6 +36,6 @@ int				cycle_spider(t_fractol *f, t_complex z)
 						2.0 * z.re * z.im + c_tmp.im);
 		c_tmp.re = c_tmp.re / 2.0 + z.re;
 		c_tmp.im = c_tmp.im / 2.0 + z.im;
-	}	
+	}
 	return (iter);
 }
