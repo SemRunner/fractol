@@ -21,10 +21,12 @@
 # define CL_ERROR 0
 # define STD_ERROR 1
 
+# define FR_FLOAT float
+
 typedef struct	s_complex_cl
 {
-	float		re;
-	float		im;
+	FR_FLOAT		re;
+	FR_FLOAT		im;
 }				t_complex_cl;
 
 typedef struct 			s_opcl
@@ -44,9 +46,9 @@ typedef struct			s_fractol_cl
 	int			type_fractol;
 	int			type_color;
 
-	float		zoom;
-	float		m_x;
-	float		m_y;
+	FR_FLOAT		zoom;
+	FR_FLOAT		m_x;
+	FR_FLOAT		m_y;
 	int			max_iter;
 	t_complex_cl	k;
 	t_complex_cl	factor;

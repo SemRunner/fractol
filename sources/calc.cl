@@ -1,9 +1,9 @@
 #include "calc.hl"
 
-float			pow1(float t, int i)
+FR_FLOAT			pow1(FR_FLOAT t, int i)
 {
 	int		j;
-	float	res;
+	FR_FLOAT	res;
 
 	res = t;
 	j = 0;
@@ -12,7 +12,7 @@ float			pow1(float t, int i)
 	return (res);
 }
 
-float			fabs1(float t)
+FR_FLOAT			fabs1(FR_FLOAT t)
 {
 	if (t > 0)
 		return (t);
@@ -20,7 +20,7 @@ float			fabs1(float t)
 		return (-t);
 }
 
-t_complex_cl	init_complex_cl(float re, float im)
+t_complex_cl	init_complex_cl(FR_FLOAT re, FR_FLOAT im)
 {
 	t_complex_cl	res;
 
@@ -34,9 +34,9 @@ int				set_fractol_color(int iter, int max_iter, int type_color)
 	int		red;
 	int		green;
 	int		blue;
-	float	t;
+	FR_FLOAT	t;
 
-	t = (float)iter / (float)max_iter;
+	t = (FR_FLOAT)iter / (FR_FLOAT)max_iter;
 	red = (int)(9 * (1 - t) * pow1(t, 3) * 255);
 	green = (int)(15 * pow1((1 - t), 2) * pow1(t, 2) * 255);
 	blue = (int)(8.5 * pow1(1 - t, 3) * t * 255);

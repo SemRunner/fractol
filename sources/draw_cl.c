@@ -17,14 +17,14 @@ void		set_fractol_cl(t_fractol *f, t_fractol_cl *f_cl)
 {
 	f_cl->type_fractol = f->type_fractol;
 	f_cl->type_color = f->type_color;
-	f_cl->zoom = (float)f->zoom;
-	f_cl->m_x = (float)f->m_x;
-	f_cl->m_y = (float)f->m_y;
+	f_cl->zoom = (FR_FLOAT)f->zoom;
+	f_cl->m_x = (FR_FLOAT)f->m_x;
+	f_cl->m_y = (FR_FLOAT)f->m_y;
 	f_cl->max_iter = f->max_iter;
-	f_cl->factor.re = (float)f->factor.re;
-	f_cl->factor.im = (float)f->factor.im;
-	f_cl->k.re = (float)f->k.re;
-	f_cl->k.im = (float)f->k.im;
+	f_cl->factor.re = (FR_FLOAT)f->factor.re;
+	f_cl->factor.im = (FR_FLOAT)f->factor.im;
+	f_cl->k.re = (FR_FLOAT)f->k.re;
+	f_cl->k.im = (FR_FLOAT)f->k.im;
 	f_cl->height = f->m->height;
 	f_cl->width = f->m->width;
 }
