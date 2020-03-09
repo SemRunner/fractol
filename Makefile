@@ -1,103 +1,104 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: odrinkwa <odrinkwa@student.42.fr>          +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2019/06/17 12:13:46 by odrinkwa          #+#    #+#              #
-#    Updated: 2019/12/15 15:33:35 by odrinkwa         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+#set name of project and exec file
+PROJ_NAME ?= FRACTOL
+TARGET_EXEC ?= fractol
 
-NAME = fractol
+OBJ_DIR = ./objects
 
-SRC_DIR := ./sources
-INC_DIR := ./includes
-INCMLX_DIR := ./fdf_lib/mlx
-INCLIBFT_DIR := ./libft/includes
-OBJ_DIR := ./objects
-LIB_DIR := ./libft
+FILE_LAST_MODE = $(OBJ_DIR)/last_version.txt
+cat := $(if $(filter $(OS),Windows_NT),type,cat)
+LAST_MODE = $(shell $(cat) $(FILE_LAST_MODE) 2>/dev/null)
 
-SRC_COMMON := complex.c draw_fractol.c keyhooks_fractol.c fractol_init.c \
-		put_legend_fractol.c cycle_fractol1.c cycle_fractol2.c mouse_fractol.c\
-		zoom_move_fractol.c init_cl.c init_topcl.c init_cl_load_src.c draw_cl.c
+ifneq ($(mode),debug)
+   mode = release
+   BUILD_DIR = $(OBJ_DIR)/release
+   PREFIX = RELEASE MODE
+else
+   mode = debug
+   BUILD_DIR = $(OBJ_DIR)/debug
+   PREFIX = DEBUG MODE
+endif
 
-SRC  := main.c $(SRC_COMMON)
-
-HDRS := includes/fractol.h includes/fractol_opcl.h
-OBJ  := $(addprefix $(OBJ_DIR)/,$(SRC:.c=.o))
-OBJECTS = $(SOURCES:.c=.o)
-
-FDF_SRC_DIR := ./fdf_lib/sources
-FDF_HDR_DIR := ./fdf_lib/includes
-FDF_OBJ_DIR := ./fdf_lib/objects
-
-FDF_SRC := fdf_color.c fdf_draw_point.c fdf_draw_pixel_line.c fdf_get_proj_point.c \
-	fdf_initialize_mlx.c fdf_iso_transform.c fdf_rotation.c \
-	fdf_make_map_points.c fdf_keyhook.c draw_surface.c \
-	fdf_draw_figures.c fdf_legend.c fdf_draw_figures_box.c \
-	fdf_calc_hzoom.c fdf_clear_image.c fdf_rotation_matrix.c \
-	fdf_rotation_matrix1.c fdf_draw_image.c
-
-FDF_HDR := ./fdf_lib/includes/fdf.h
-
-FDF_OBJ := $(FDF_SRC:.c=.o)
-FDF_OBJ_WITH_PATH := $(addprefix $(FDF_OBJ_DIR)/, $(FDF_OBJ))
+ifneq ($(mode),$(LAST_MODE))
+    REBUILD = clean_only_exe
+endif
 
 
-CC := gcc
-CFLAGS := -O3 -g3 -Wall -Wextra -Werror
+SRC_DIRS = ./sources ./fdf_lib/sources   # set directories with sources
+SRCS := $(shell find $(SRC_DIRS) -type f -name *.c )
+
+OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
+DEPS := $(OBJS:.o=.d)
+
+LIBFTDIR = libft
+LIBFT = $(LIBFTDIR)/libft.a
+
+INC_DIRS := $(LIBFTDIR)/includes includes fdf_lib/mlx fdf_lib/includes  # set directories includes
+INC_FLAGS := $(addprefix -I,$(INC_DIRS))
+
+CFLAGS ?= -Wall -Wextra -Werror $(INC_FLAGS) -MMD -MP
+ifeq ($(mode),release)
+   CFLAGS += -O2
+else
+   CFLAGS += -O0 -g
+endif
+
+# set additional params
 MLXPARAMS := -L ./fdf_lib/mlx -lmlx -framework OpenGL -framework AppKit -framework OpenCL
-LIBFT_NODEBUG :=
+ADDITIONAL_PARAMS := $(MLXPARAMS)
 
-L_FT := libft
+.PHONY: all clean fclean re info debug release
 
-include $(L_FT)/libft_base.mk
-TMP = $(subst ./, /, $(ALL_LIBFT))
-FULL_ALL_LIBFT = $(addprefix $(L_FT),$(TMP))
+all: info $(TARGET_EXEC)
 
-SRC_LIB = $(addprefix $(L_FT)/,$(LIBFT_SRC))
+clean_only_exe:
+	@if [ -f "$(TARGET_EXEC)" ]; then \
+		printf "\033[0;32m%-10s\033[0;34m%-9s\033[0;33m  %s\033[0m\n" "[$(PROJ_NAME)]" "[$(PREFIX)]" "Clean bin $(PROJ_NAME), because changed MODE COMPILATION."; \
+		rm -rf $(TARGET_EXEC); \
+	fi
+	@make -s -C $(LIBFTDIR) $(MAKECMDGOALS)
 
-HEADER_LIB = $(INCLIBFT_DIR)/libft.h
+# make executable file
+$(TARGET_EXEC): $(OBJS) $(LIBFT) $(REBUILD)
+	@printf "\033[0;32m%-10s\033[0;34m%-9s\033[0;33m  %s\033[0m %s\n" "[$(PROJ_NAME)]" "[$(PREFIX)]" "Linking:  " "$@"
+	@$(CC) $(OBJS) $(LIBFT) -o $@ $(LDFLAGS) $(ADDITIONAL_PARAMS)
+	@rm -f $(FILE_LAST_MODE)
+	@echo "$(mode)" >> $(FILE_LAST_MODE)
 
-.PHONY: all clean fclean re
+# c source
+$(BUILD_DIR)/%.c.o: %.c
+	@printf "\033[0;32m%-10s\033[0;34m%-9s\033[0;33m  %s\033[0m %s\n" "[$(PROJ_NAME)]" "[$(PREFIX)]" "Compiling:" "$<"
+	@$(MKDIR_P) $(dir $@)
+	@$(CC) $(CFLAGS) -c $< -o $@
 
-all: $(OBJ_DIR) $(NAME)
+# make my libft
+$(LIBFT):
+	@make -s -C $(LIBFTDIR) $(MAKECMDGOALS)
 
-test:
-	@echo $(FULL_ALL_LIBFT)
+info:
+
+debug:
+	@make -s mode=debug
+
+release:
+	@make -s mode=release
 
 clean:
-	rm -rf $(OBJ_DIR)
-	rm -rf $(FDF_OBJ_DIR)
-	$(MAKE) -C libft clean
+	@printf "\033[0;32m%-10s\033[0;34m%-9s\033[0;33m  %s\033[0m\n" "[$(PROJ_NAME)]" "[$(PREFIX)]" "Clean objects $(PROJ_NAME)"
+	@$(RM) -rf $(OBJ_DIR)
+	@make -s -C $(LIBFTDIR) clean
 
-fclean: clean
-	rm -rf $(NAME)
-	$(MAKE) -C $(L_FT) fclean
+fclean:
+	@printf "\033[0;32m%-10s\033[0;34m%-9s\033[0;33m  %s\033[0m\n" "[$(PROJ_NAME)]" "[$(PREFIX)]" "Clean objects $(PROJ_NAME)"
+	@$(RM) -rf $(OBJ_DIR)
+	@printf "\033[0;32m%-10s\033[0;34m%-9s\033[0;33m  %s\033[0m\n" "[$(PROJ_NAME)]" "[$(PREFIX)]" "Clean bin $(PROJ_NAME)"
+	@rm -rf $(TARGET_EXEC)
+	@make -s -C $(LIBFTDIR) fclean
+
+norme:
+	@norminette | grep Error -B 1
 
 re: fclean all
 
+-include $(DEPS)
 
-$(FDF_OBJ_DIR):
-	mkdir -p $(FDF_OBJ_DIR)
-
-$(FDF_OBJ_DIR)/%.o:$(FDF_SRC_DIR)/%.c $(FDF_HDR)
-	$(CC) $(CFLAGS) $(LIB_INC) -I $(FDF_HDR_DIR) -I $(INCLIBFT_DIR) -I $(INCMLX_DIR) -o $@ -c $<
-
-$(OBJ_DIR):
-	mkdir -p $(OBJ_DIR)
-
-$(OBJ_DIR)/%.o:$(SRC_DIR)/%.c $(HDRS)
-	$(CC) $(CFLAGS) $(LIB_INC) -I $(INC_DIR) -I $(INCLIBFT_DIR) -I $(FDF_HDR_DIR) -I $(INCMLX_DIR) -o $@ -c $<
-
-$(NAME): $(OBJ_DIR) $(OBJ) $(HEADER_LIB) $(HDRS) $(FULL_ALL_LIBFT) $(FDF_OBJ_DIR) $(FDF_OBJ_WITH_PATH)
-	$(MAKE) -C $(L_FT) $(LIBFT_NODEBUG)
-	$(CC) $(CFLAGS) $(OBJ) $(FDF_OBJ_WITH_PATH) -o $(NAME) -I $(INCLIBFT_DIR) -I $(INCMLX_DIR) -L libft -lft $(MLXPARAMS)
-
-nodebug: CFLAGS = -Wall -Wextra -O3 -Werror
-
-nodebug: LIBFT_NODEBUG = nodebug
-
-nodebug: all
+MKDIR_P ?= mkdir -p

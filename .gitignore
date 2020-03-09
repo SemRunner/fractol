@@ -50,3 +50,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+fractol
+.DS_Store
+fdf_lib/.DS_Store

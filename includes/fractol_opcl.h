@@ -22,7 +22,7 @@
 # define CL_ERROR 0
 # define STD_ERROR 1
 
-# define FR_FLOAT double
+# define FR_FLOAT float
 
 typedef struct	s_complex_cl
 {
